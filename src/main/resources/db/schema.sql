@@ -5,7 +5,7 @@ CREATE TABLE `usuario` (
   `user_name` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `user_name` (`user_name`)
+  UNIQUE KEY `UK_user_name` (`user_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `lista` (
@@ -14,9 +14,9 @@ CREATE TABLE `lista` (
   `id_usuario` bigint(20) NOT NULL,
   `fecha_de_creacion` datetime NOT NULL,
   `fecha_de_terminacion` datetime NOT NULL,
-  `estado` boolean NOT NULL,
+  `estado` bit(1) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `FK_list_usuario` (`id_usuario`),
+  KEY `FK_lista_usuario` (`id_usuario`),
   CONSTRAINT `FK_list_usuario` FOREIGN KEY (`id_usuario`) REFERENCES `usuario` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -25,7 +25,7 @@ CREATE TABLE `tarea` (
   `descripcion` varchar(255) NOT NULL,
   `fecha_de_creacion` datetime NOT NULL,
   `fecha_de_terminacion` datetime NOT NULL,
-  `estado` boolean,
+  `estado` bit(1),
   `id_lista` bigint(20) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `FK_tarea_lista` (`id_lista`),
