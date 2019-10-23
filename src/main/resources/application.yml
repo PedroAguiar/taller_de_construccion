@@ -4,7 +4,25 @@ server:
         enabled: true
         mime-types: text/html,text/xml,text/plain,text/css,text/javascript,application/javascript,application/json
 
-
 spring:
     application:
         name: checklist
+    jpa:
+      hibernate:
+        ddl-auto: create-drop
+    datasource:
+      username: root
+      password:
+      url: jdbc:mysql://localhost:3306/checklist?createDatabaseIfNotExist=true
+      tomcat:
+          max-active: 50
+          min-idle: 5
+          max-idle: 25
+          max-wait: 10000
+          max-age: 600000
+          min-evictable-idle-time-millis: 60000
+          validation-query: SELECT 1
+          validation-query-timeout: 3
+          jdbc-interceptors: ConnectionState
+          default-transaction-isolation: 2 # TRANSACTION_READ_COMMITTED
+      driver-class-name: com.mysql.cj.jdbc.Driver
