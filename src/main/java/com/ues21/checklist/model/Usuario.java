@@ -1,5 +1,6 @@
 package com.ues21.checklist.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -14,25 +15,29 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @NotNull
+    @Column(length = 75)
     private String nombre;
 
     @NotNull
+    @Column(length = 150)
     private String apellido;
 
     @NotNull
+    @Column(length = 75)
     private String userName;
 
     @NotNull
+    @Column(columnDefinition = "char(72)")
     private String password;
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 

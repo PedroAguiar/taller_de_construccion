@@ -1,6 +1,7 @@
 package com.ues21.checklist.model;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
@@ -20,9 +21,10 @@ public class Lista {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private int id;
 
     @NotNull
+    @Column(length = 150)
     private String titulo;
 
     @NotNull
@@ -30,10 +32,10 @@ public class Lista {
     @JoinColumn(name = "id_usuario", foreignKey = @ForeignKey(name = "FK_lista_usuario"), referencedColumnName = "id")
     private Usuario usuario;
 
-    @NotNull
+    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP()")
     private LocalDateTime fechaDeCreacion;
 
-    @NotNull
+    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP()")
     private LocalDateTime fechaDeTerminacion;
 
     private boolean estado;
@@ -43,11 +45,11 @@ public class Lista {
     private List<Tarea> tareas;
 
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
