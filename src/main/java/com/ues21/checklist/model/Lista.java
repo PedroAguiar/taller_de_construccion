@@ -85,7 +85,7 @@ public class Lista {
         this.fechaDeTerminacion = fechaDeTerminacion;
     }
 
-    public boolean isEstado() {
+    public boolean getEstado() {
         return estado;
     }
 

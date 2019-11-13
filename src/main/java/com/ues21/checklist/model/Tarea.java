@@ -60,7 +60,7 @@ public class Tarea {
         this.fechaDeTerminacion = fechaDeTerminacion;
     }
 
-    public boolean isEstado() {
+    public boolean getEstado() {
         return estado;
     }
 
