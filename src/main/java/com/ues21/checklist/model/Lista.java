@@ -35,7 +35,7 @@ public class Lista {
     @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP()")
     private LocalDateTime fechaDeCreacion;
 
-    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP()")
+    @Column(nullable = true, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP()")
     private LocalDateTime fechaDeTerminacion;
 
     private boolean estado;
