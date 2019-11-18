@@ -11,7 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -35,6 +38,15 @@ public class TasksListController {
         List<Lista> listas = listaService.getAllForUser(usuario);
         model.addAttribute("usuario", usuario);
         model.addAttribute("listas", listas);
+        return "taskslist";
+    }
+
+    @PostMapping("/taskslist")
+    public String save(@ModelAttribute Lista lista, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "taskslist";
+        }
+
         return "taskslist";
     }
 }
