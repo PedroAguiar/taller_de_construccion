@@ -5,6 +5,8 @@ import com.ues21.checklist.model.Tarea;
 import com.ues21.checklist.model.Usuario;
 import com.ues21.checklist.repository.ListaRepository;
 import com.ues21.checklist.repository.UsuarioRepository;
+import com.ues21.checklist.service.ListaService;
+import com.ues21.checklist.service.UsuarioService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Controller;
@@ -18,20 +20,21 @@ import java.util.Optional;
 @Controller
 public class TasksListController {
 
-    @Autowired
-    public UsuarioRepository usuarioRepository;
-    @Autowired
-    public ListaRepository listaRepository;
+    private UsuarioService usuarioService;
+    private ListaService listaService;
+
+    TasksListController(UsuarioService usuarioService, ListaService listaService) {
+        this.usuarioService = usuarioService;
+        this.listaService = listaService;
+    }
 
     @GetMapping("/taskslist")
     public String greeting(@RequestParam(name="userId", required=false, defaultValue="1") Integer userId, Model model) {
-        Optional<Usuario> usuario = usuarioRepository.findById(userId);
-        Lista listaExample = new Lista();
-        listaExample.setUsuario(usuario.get());
-        System.out.println("Usuario: " + listaExample.getUsuario());
-        List<Lista> listLista = listaRepository.findByUsuario(usuario.get());
+        Usuario usuario = usuarioService.read(userId);
+        System.out.println("Usuario: " + usuario.getId());
+        List<Lista> listas = listaService.getAllForUser(usuario);
         model.addAttribute("usuario", usuario);
-        model.addAttribute("lista", listLista);
+        model.addAttribute("listas", listas);
         return "taskslist";
     }
 }

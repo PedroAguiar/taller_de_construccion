@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface ListaRepository extends JpaRepository<Lista, Integer>, QueryByExampleExecutor<Lista> {
 
-    List<Lista> findByUsuario(Usuario usuario);
+    List<Lista> findAllByUsuario(Usuario usuario);
 
 }
