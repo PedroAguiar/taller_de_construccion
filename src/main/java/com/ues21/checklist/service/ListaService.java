@@ -1,14 +1,9 @@
 package com.ues21.checklist.service;
 
-import com.ues21.checklist.controller.api.CreateListaRequest;
-import com.ues21.checklist.controller.api.UpdateListaRequest;
 import com.ues21.checklist.model.Lista;
 import com.ues21.checklist.model.Usuario;
 import com.ues21.checklist.repository.ListaRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,41 +18,23 @@ public class ListaService {
         this.usuarioService = usuarioService;
     }
 
-    @Transactional
-    public Lista create(CreateListaRequest request) {
-        Lista lista = toLista(request);
-
-        Usuario usuario = usuarioService.read(request.getIdUsuario());
+    public Lista create(Lista lista) {
+        Usuario usuario = usuarioService.read(1);
         lista.setUsuario(usuario);
-
         return listaRepository.save(lista);
     }
 
     public Lista read(Integer id) {
-        return listaRepository.getOne(id);
+        return listaRepository.findById(id).get();
     }
 
-    @Transactional
-    public Lista update(UpdateListaRequest request) {
-        Lista lista = read(request.getListaId());
-
-        lista.setTitulo(request.getTitulo());
-        lista.setEstado(request.getEstado());
-
+    public Lista update(Lista lista) {
         return listaRepository.save(lista);
     }
 
-    @Transactional
     public void delete(Integer id) {
         Lista lista = read(id);
         listaRepository.delete(lista);
-    }
-
-    private Lista toLista(CreateListaRequest request) {
-        Lista lista = new Lista();
-        lista.setTitulo(request.getTitulo());
-        lista.setTareas(new ArrayList<>());
-        return lista;
     }
 
     public List<Lista> getAllForUser(Usuario usuario) {

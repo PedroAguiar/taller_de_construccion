@@ -1,0 +1,9 @@
+html, body {
+    background-color: #c4c4c4;
+    height: 100%;
+    width: 100%;
+}
+
+.new-item-form {
+    width: 500px;
+}

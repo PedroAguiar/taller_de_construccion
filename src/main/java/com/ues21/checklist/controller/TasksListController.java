@@ -3,50 +3,133 @@ package com.ues21.checklist.controller;
 import com.ues21.checklist.model.Lista;
 import com.ues21.checklist.model.Tarea;
 import com.ues21.checklist.model.Usuario;
-import com.ues21.checklist.repository.ListaRepository;
-import com.ues21.checklist.repository.UsuarioRepository;
 import com.ues21.checklist.service.ListaService;
+import com.ues21.checklist.service.TareaService;
 import com.ues21.checklist.service.UsuarioService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Controller
 public class TasksListController {
 
     private UsuarioService usuarioService;
     private ListaService listaService;
+    private TareaService tareaService;
 
-    TasksListController(UsuarioService usuarioService, ListaService listaService) {
+    TasksListController(UsuarioService usuarioService, ListaService listaService, TareaService tareaService) {
         this.usuarioService = usuarioService;
         this.listaService = listaService;
+        this.tareaService = tareaService;
     }
 
     @GetMapping("/taskslist")
-    public String greeting(@RequestParam(name="userId", required=false, defaultValue="1") Integer userId, Model model) {
+    public String tasksLists(@RequestParam(name="userId", required=false, defaultValue="1") Integer userId, Model model) {
         Usuario usuario = usuarioService.read(userId);
-        System.out.println("Usuario: " + usuario.getId());
         List<Lista> listas = listaService.getAllForUser(usuario);
         model.addAttribute("usuario", usuario);
         model.addAttribute("listas", listas);
+        if (listas.isEmpty()) {
+            Lista lista = new Lista();
+            lista.setTitulo("");
+            List<Tarea> tareas = new ArrayList<>();
+            lista.setTareas(tareas);
+            listas.add(lista);
+            model.addAttribute("listas", listas);
+            model.addAttribute("usuario", usuario);
+            model.addAttribute("lista", lista);
+            model.addAttribute("crearLista", new Lista());
+            model.addAttribute("crearTask", new Tarea());
+            listaService.create(lista);
+            return "taskslist";
+        }
+        return "redirect:/taskslist/" + listas.get(0).getId();
+    }
+
+    @GetMapping("/taskslist/{id}")
+    public String taskList(@RequestParam(name="userId", required=false, defaultValue="1") Integer userId, @PathVariable(name = "id") Integer id, Model model) {
+        Usuario usuario = usuarioService.read(userId);
+        List<Lista> listas = listaService.getAllForUser(usuario);
+        model.addAttribute("usuario", usuario);
+        model.addAttribute("listas", listas);
+
+        Lista lista = listaService.read(id);
+        model.addAttribute("lista", lista);
+        model.addAttribute("crearLista", new Lista());
+        model.addAttribute("crearTask", new Tarea());
         return "taskslist";
     }
 
-    @PostMapping("/taskslist")
-    public String save(@ModelAttribute Lista lista, BindingResult result, Model model) {
+    @PostMapping("/taskslist/{id}/update")
+    public String update(@PathVariable(name = "id") Integer id, @ModelAttribute Lista lista, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "taskslist";
         }
 
-        return "taskslist";
+        if (lista.getTareas() != null) {
+            for (Tarea tarea : lista.getTareas()) {
+                Tarea tareaVieja = tareaService.read(tarea.getId());
+
+                tareaVieja.setEstado(tarea.getEstado());
+                tareaVieja.setDescripcion(tarea.getDescripcion());
+
+                tareaService.update(tareaVieja);
+            }
+
+        }
+
+        Lista listaVieja = listaService.read(lista.getId());
+        listaVieja.setTitulo(lista.getTitulo());
+        listaService.update(listaVieja);
+        return "redirect:/taskslist/" + id;
+    }
+
+    @PostMapping("/taskslist/new")
+    public String saveChecklist(@ModelAttribute Lista lista, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "taskslist";
+        }
+        Lista listaPersistida = listaService.create(lista);
+        return "redirect:/taskslist/" + listaPersistida.getId();
+    }
+
+    @GetMapping("/taskslist/{id}/delete")
+    public String deleteChecklist(@PathVariable(name = "id") Integer id) {
+        listaService.delete(id);
+        return "redirect:/taskslist";
+    }
+
+    @PostMapping("/taskslist/{id}/tasks/save")
+    public String saveTask(@ModelAttribute Tarea tarea, @PathVariable(name = "id") Integer id, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "taskslist";
+        }
+        Lista lista = listaService.read(id);
+        tareaService.create(tarea, lista);
+        return "redirect:/taskslist/" + id;
+    }
+
+
+    @GetMapping("/taskslist/{id}/completar")
+    public String completeChecklist(@PathVariable(name = "id") Integer id) {
+        Lista lista = listaService.read(id);
+
+        if (lista.getTareas() != null) {
+            for (Tarea tarea : lista.getTareas()) {
+                tarea.setEstado(true);
+            }
+        }
+
+        lista.setEstado(true);
+        listaService.update(lista);
+        return "redirect:/taskslist/" + id;
     }
 }

@@ -1,11 +1,8 @@
 package com.ues21.checklist.service;
 
-import com.ues21.checklist.controller.api.CreateUsuarioRequest;
-import com.ues21.checklist.controller.api.UpdateUsuarioRequest;
 import com.ues21.checklist.model.Usuario;
 import com.ues21.checklist.repository.UsuarioRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class UsuarioService {
@@ -16,36 +13,21 @@ public class UsuarioService {
         this.usuarioRepository = usuarioRepository;
     }
 
-    @Transactional
-    public Usuario create(CreateUsuarioRequest request) {
-        Usuario usuario = toUsuario(request);
+    public Usuario create(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
 
     public Usuario read(Integer id) {
-        return usuarioRepository.getOne(id);
+        return usuarioRepository.findById(id).get();
     }
 
-    @Transactional
-    public Usuario update(UpdateUsuarioRequest request) {
-        Usuario usuario = read(request.getIdUsuario());
-        usuario.setUserName(request.getUserName());
-        usuario.setPassword(request.getPassword());
+    public Usuario update(Usuario usuario) {
         return usuarioRepository.save(usuario);
     }
 
-    @Transactional
     public void delete(Integer id) {
         Usuario usuario = read(id);
         usuarioRepository.delete(usuario);
     }
 
-    private Usuario toUsuario(CreateUsuarioRequest request) {
-        Usuario usuario = new Usuario();
-        usuario.setNombre(request.getNombre());
-        usuario.setApellido(request.getApellido());
-        usuario.setUserName(request.getUserName());
-        usuario.setPassword(request.getPassword());
-        return usuario;
-    }
 }
