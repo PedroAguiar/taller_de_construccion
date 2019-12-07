@@ -32,10 +32,10 @@ public class Lista {
     @JoinColumn(name = "id_usuario", foreignKey = @ForeignKey(name = "FK_lista_usuario"), referencedColumnName = "id")
     private Usuario usuario;
 
-    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP()")
+    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime fechaDeCreacion;
 
-    @Column(nullable = true, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP()")
+    @Column(nullable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime fechaDeTerminacion;
 
     private boolean estado;
