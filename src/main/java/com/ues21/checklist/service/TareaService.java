@@ -1,5 +1,6 @@
 package com.ues21.checklist.service;
 
+import com.ues21.checklist.controller.api.CreateTareaRequest;
 import com.ues21.checklist.model.Lista;
 import com.ues21.checklist.model.Tarea;
 import com.ues21.checklist.repository.TareaRepository;
@@ -18,8 +19,10 @@ public class TareaService {
         this.listaService = listaService;
     }
 
-    public Tarea create(Tarea tarea, Lista lista) {
+    public Tarea create(CreateTareaRequest request) {
+        Tarea tarea = toTarea(request);
         Tarea tareaPersistida = tareaRepository.save(tarea);
+        Lista lista = listaService.read(request.getIdLista());
 
         if (lista.getTareas() != null) {
             lista.getTareas().add(tareaPersistida);
@@ -43,5 +46,12 @@ public class TareaService {
     public void delete(Integer id) {
         Tarea tarea = read(id);
         tareaRepository.delete(tarea);
+    }
+
+
+    private Tarea toTarea(CreateTareaRequest request) {
+        Tarea tarea = new Tarea();
+        tarea.setDescripcion(request.getDescripcion());
+        return tarea;
     }
 }

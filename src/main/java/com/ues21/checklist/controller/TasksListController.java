@@ -1,5 +1,7 @@
 package com.ues21.checklist.controller;
 
+import com.ues21.checklist.controller.api.CreateListaRequest;
+import com.ues21.checklist.controller.api.CreateTareaRequest;
 import com.ues21.checklist.model.Lista;
 import com.ues21.checklist.model.Tarea;
 import com.ues21.checklist.model.Usuario;
@@ -46,8 +48,8 @@ public class TasksListController {
             model.addAttribute("listas", listas);
             model.addAttribute("usuario", usuario);
             model.addAttribute("lista", lista);
-            model.addAttribute("crearLista", new Lista());
-            model.addAttribute("crearTask", new Tarea());
+            model.addAttribute("crearLista", new CreateListaRequest());
+            model.addAttribute("crearTask", new CreateTareaRequest());
             listaService.create(lista);
             return "taskslist";
         }
@@ -107,14 +109,14 @@ public class TasksListController {
     }
 
     @PostMapping("/taskslist/{id}/tasks/new")
-    public String saveTask(@ModelAttribute Tarea tarea, @PathVariable(name = "id") Integer id, BindingResult result, Model model) {
+    public String saveTask(@ModelAttribute CreateTareaRequest request, @PathVariable(value = "id") Integer idLista,
+                           BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "taskslist";
         }
-        Lista lista = listaService.read(id);
-        tarea.setId(0);
-        tareaService.create(tarea, lista);
-        return "redirect:/taskslist/" + id;
+        request.setIdLista(idLista);
+        tareaService.create(request);
+        return "redirect:/taskslist/" + request.getIdLista();
     }
 
 
