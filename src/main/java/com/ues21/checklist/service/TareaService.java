@@ -20,6 +20,7 @@ public class TareaService {
 
     public Tarea create(Tarea tarea, Lista lista) {
         Tarea tareaPersistida = tareaRepository.save(tarea);
+
         if (lista.getTareas() != null) {
             lista.getTareas().add(tareaPersistida);
         } else {
@@ -28,7 +29,7 @@ public class TareaService {
         }
 
         listaService.update(lista);
-        return tareaPersistida;
+        return tarea;
     }
 
     public Tarea read(Integer id) {

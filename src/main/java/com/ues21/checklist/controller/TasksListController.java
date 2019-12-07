@@ -73,20 +73,19 @@ public class TasksListController {
         if (result.hasErrors()) {
             return "taskslist";
         }
+        Lista listaVieja = listaService.read(lista.getId());
 
-        if (lista.getTareas() != null) {
-            for (Tarea tarea : lista.getTareas()) {
-                Tarea tareaVieja = tareaService.read(tarea.getId());
-
-                tareaVieja.setEstado(tarea.getEstado());
-                tareaVieja.setDescripcion(tarea.getDescripcion());
-
-                tareaService.update(tareaVieja);
+        if (listaVieja.getTareas() != null && lista.getTareas() != null) {
+            for (Tarea tarea : listaVieja.getTareas()) {
+                lista.getTareas().forEach(t -> {
+                   if (t.getId() == tarea.getId()) {
+                       t.setEstado(tarea.getEstado());
+                       t.setDescripcion(tarea.getDescripcion());
+                   }
+                });
             }
-
         }
 
-        Lista listaVieja = listaService.read(lista.getId());
         listaVieja.setTitulo(lista.getTitulo());
         listaService.update(listaVieja);
         return "redirect:/taskslist/" + id;
@@ -107,12 +106,13 @@ public class TasksListController {
         return "redirect:/taskslist";
     }
 
-    @PostMapping("/taskslist/{id}/tasks/save")
+    @PostMapping("/taskslist/{id}/tasks/new")
     public String saveTask(@ModelAttribute Tarea tarea, @PathVariable(name = "id") Integer id, BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "taskslist";
         }
         Lista lista = listaService.read(id);
+        tarea.setId(0);
         tareaService.create(tarea, lista);
         return "redirect:/taskslist/" + id;
     }

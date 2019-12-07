@@ -67,7 +67,7 @@
                         <h5 class="modal-title" id="agregarTaskModalLabel">Agregar Task</h5>
                     </div>
                     <div class="modal-body">
-                        <form action="#" th:action="@{'/taskslist/' + ${lista.id} + '/tasks/save'}" th:object="${crearTask}" method="post">
+                        <form action="#" th:action="@{'/taskslist/' + ${lista.id} + '/tasks/new'}" th:object="${crearTask}" method="post">
                             <div class="form-group">
                                 <label for="listaInput">Descripcion</label>
                                 <input th:field="${crearTask.descripcion}" type="text" class="form-control" id="taskInput" aria-describedby="taskHelp" placeholder="Ingresa la descripcion de la tarea a realizar" required="required" data-error="Por favor una descripcion valida.">
